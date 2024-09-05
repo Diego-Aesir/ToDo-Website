@@ -1,9 +1,5 @@
 class ToDoList {
     #items = [];
-
-    constructor(index) {
-        this.index = index;
-    }
     
     addItem(ToDoItem) {
         this.#items.push(ToDoItem);
@@ -12,6 +8,10 @@ class ToDoList {
 
     removeItem(index) {
         this.#items.splice(index, index+1);
+    }
+
+    getItemOnIndex(index) {
+        return this.#items[index];
     }
 
     get items() {

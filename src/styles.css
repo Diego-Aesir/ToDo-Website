@@ -1,0 +1,14 @@
+.URGENT {
+    background-color: brown;
+    font-weight: bolder;
+    color: white;
+}
+
+.IMPORTANT {
+    background-color: rgb(238, 222, 0);
+    font-weight: bolder;
+}
+
+.NO_HURRY {
+    background-color: rgb(51, 172, 14);
+}
