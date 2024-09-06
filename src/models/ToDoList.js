@@ -1,5 +1,9 @@
 class ToDoList {
     #items = [];
+
+    constructor (subject) {
+        this.subject = subject;
+    }
     
     addItem(ToDoItem) {
         this.#items.push(ToDoItem);
@@ -20,9 +24,9 @@ class ToDoList {
 }
 
 const PRIORITY = {
-    NO_HURRY: "Sem pressa",
-    IMPORTANT: "Importante",
-    URGENT: "Urgente"
+    NO_HURRY: "No Hurry",
+    IMPORTANT: "Important",
+    URGENT: "Urgent"
 };
 
 class ToDoItem {
@@ -77,6 +81,6 @@ class ToDoItem {
 
 export {
     ToDoList,
+    ToDoItem,
     PRIORITY,
-    ToDoItem
 }
