@@ -33,6 +33,11 @@ p {
     background-color: #E1D7B7;
 }
 
+button:hover {
+    background-color: #c0392b;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
 .URGENT {
     background-color: brown;
     font-weight: bolder;

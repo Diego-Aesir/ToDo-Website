@@ -5,7 +5,8 @@ import {
 } from "../models/ToDoList.js";
 
 import {
-    createDivItemRow
+    createDivItemRow,
+    removeChildFromIndex
 } from "../view/ToDoView.js";
 
 function createStandardList() {
@@ -31,19 +32,32 @@ function createStandardList() {
          PRIORITY.URGENT
     );
 
+
     list.addItem(item);
     list.addItem(item2);
     list.addItem(item3);
+
     return list;
 }
 
 function insertItemsOnObject(list, object) {
     for(let x in list.items) {
-        object.appendChild(createDivItemRow(list.getItemOnIndex(x)));
+        object.appendChild(createDivItemRow(list, list.getItemOnIndex(x)));
+    }
+}
+
+function eraseItem(list, item) {
+    removeChildFromIndex(list, item);
+    list.removeItem(item.index);
+
+    for(let i in list.items) {
+        let itemReforged = list.getItemOnIndex(i);
+        itemReforged.index = i;
     }
 }
 
 export {
     createStandardList,
     insertItemsOnObject,
+    eraseItem
 }

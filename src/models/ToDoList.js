@@ -7,11 +7,11 @@ class ToDoList {
     
     addItem(ToDoItem) {
         this.#items.push(ToDoItem);
-        ToDoItem.itemIndex = this.items.length-1
+        ToDoItem.index = this.items.length-1
     }
 
     removeItem(index) {
-        this.#items.splice(index, index+1);
+        this.#items.splice(index, 1);
     }
 
     getItemOnIndex(index) {
@@ -30,7 +30,7 @@ const PRIORITY = {
 };
 
 class ToDoItem {
-    itemIndex;
+    index;
     #title;
     #description;
     #dueDate;
