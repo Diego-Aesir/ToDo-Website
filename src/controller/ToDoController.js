@@ -5,59 +5,83 @@ import {
 } from "../models/ToDoList.js";
 
 import {
-    createDivItemRow,
-    removeChildFromIndex
+    createItemOnDiv,
+    removeChildFromIndex,
 } from "../view/ToDoView.js";
 
 function createStandardList() {
+    
     const list = new ToDoList("Home");
-    const item = new ToDoItem (
+    
+    const item3 = new ToDoItem 
+
+    list.addItem(createNewItem(
         "Clean the house",
         "Perform a general cleaning of the house, including vacuuming and mopping.",
         "10/09/2024",
         PRIORITY.IMPORTANT
-    );
-    
-    const item2 = new ToDoItem (
+    ));
+
+    list.addItem(createNewItem(
         "Plan meals",
         "Create a meal plan for the week, including recipes and necessary shopping.",
         "15/09/2024",
          PRIORITY.NO_HURRY
-    );
-    
-    const item3 = new ToDoItem (
+    ));
+    list.addItem(createNewItem(
         "Team meeting",
         "Attend the weekly team meeting to discuss progress and upcoming tasks.",
         "07/09/2024",
          PRIORITY.URGENT
-    );
-
-
-    list.addItem(item);
-    list.addItem(item2);
-    list.addItem(item3);
-
+    ));
     return list;
 }
 
-function insertItemsOnObject(list, object) {
+function insertItemsOnObjectFromList(list, row) {
     for(let x in list.items) {
-        object.appendChild(createDivItemRow(list, list.getItemOnIndex(x)));
+        row.appendChild(createItemOnDiv(list, list.getItemOnIndex(x)));
     }
 }
 
-function eraseItem(list, item) {
-    removeChildFromIndex(list, item);
-    list.removeItem(item.index);
+function createNewToDoList() {
 
-    for(let i in list.items) {
-        let itemReforged = list.getItemOnIndex(i);
-        itemReforged.index = i;
+}
+
+function createNewItem(title, description, date, PRIORITY) {
+    const newItem = new ToDoItem (
+        title,
+        description,
+        date,
+        PRIORITY
+    );
+    return newItem;
+}
+
+function eraseItem(list, item) {
+    if(eraseConfirmation("ToDo Item: " + item.title)) {
+        removeChildFromIndex(list, item);
+        list.removeItem(item.index);
+    
+        for(let i in list.items) {
+            let itemReforged = list.getItemOnIndex(i);
+            itemReforged.index = i;
+        }
     }
+}
+
+function eraseConfirmation(whichItem) {
+    return confirm("Do you wish to remove " + whichItem + " ? (This action cannot be undone)");
+}
+
+function addConfirmation(whichThing) {
+    return confirm("Are you sure about your " + whichThing + " information");
 }
 
 export {
     createStandardList,
-    insertItemsOnObject,
-    eraseItem
+    insertItemsOnObjectFromList,
+    eraseItem,
+    eraseConfirmation,
+    createNewItem,
+    addConfirmation
 }
