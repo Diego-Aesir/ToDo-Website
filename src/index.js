@@ -1,11 +1,15 @@
 import "./styles.css";
 import {
-    loadFirstTimeHomeScreen
+    createAddRowDiv,
+    loadFirstTimeHomeScreen,
+    loadUserList
 } from "./view/ToDoView.js";
 
-const personalToDo = localStorage.getItem("personalToDo");
 const content = document.querySelector("#content");
 
-if(personalToDo == null) {
+if(localStorage.getItem("personalToDoList") == null) {
     loadFirstTimeHomeScreen();
+    content.appendChild(createAddRowDiv());
+} else {
+    loadUserList();
 }

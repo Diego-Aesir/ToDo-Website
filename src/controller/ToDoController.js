@@ -10,10 +10,7 @@ import {
 } from "../view/ToDoView.js";
 
 function createStandardList() {
-    
     const list = new ToDoList("Home");
-    
-    const item3 = new ToDoItem 
 
     list.addItem(createNewItem(
         "Clean the house",
@@ -43,8 +40,9 @@ function insertItemsOnObjectFromList(list, row) {
     }
 }
 
-function createNewToDoList() {
-
+function createNewToDoList(subject) {
+    const newList = new ToDoList(subject);
+    return newList;
 }
 
 function createNewItem(title, description, date, PRIORITY) {
@@ -77,11 +75,17 @@ function addConfirmation(whichThing) {
     return confirm("Are you sure about your " + whichThing + " information");
 }
 
+function saveContentOnLocalStorage(list) {
+    localStorage.setItem("personalToDoList", JSON.stringify(list));
+}
+
 export {
     createStandardList,
     insertItemsOnObjectFromList,
     eraseItem,
     eraseConfirmation,
+    createNewToDoList,
     createNewItem,
-    addConfirmation
+    addConfirmation,
+    saveContentOnLocalStorage
 }

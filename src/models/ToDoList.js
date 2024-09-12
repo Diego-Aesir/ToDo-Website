@@ -7,7 +7,7 @@ class ToDoList {
     
     addItem(ToDoItem) {
         this.#items.push(ToDoItem);
-        ToDoItem.index = this.items.length-1
+        ToDoItem.index = this.#items.length - 1;
     }
 
     removeItem(index) {
@@ -21,6 +21,13 @@ class ToDoList {
     get items() {
         return this.#items;
     }
+
+    toJSON() {
+        return {
+            subject: this.subject,
+            items: this.#items
+        };
+    }
 }
 
 const PRIORITY = {
@@ -30,7 +37,7 @@ const PRIORITY = {
 };
 
 class ToDoItem {
-    index;
+    index = null;
     #title;
     #description;
     #dueDate;
@@ -76,6 +83,16 @@ class ToDoItem {
         } else {
             throw new Error('Invalid priority');
         }
+    }
+
+    toJSON() {
+        return {
+            index: this.index,
+            title: this.#title,
+            description: this.#description,
+            dueDate: this.#dueDate,
+            priority: this.#priority
+        };
     }
 }
 

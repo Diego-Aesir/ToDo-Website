@@ -1,4 +1,5 @@
 import {
+    ToDoList,
     PRIORITY
 } from "../models/ToDoList.js";
 
@@ -7,17 +8,37 @@ import {
     insertItemsOnObjectFromList,
     eraseItem,
     eraseConfirmation,
+    createNewToDoList,
     createNewItem,
-    addConfirmation
+    addConfirmation,
+    saveContentOnLocalStorage
 } from "../controller/ToDoController.js";
 
 const content = document.querySelector("#content");
+const userList = localStorage.getItem("personalToDoList");
+const listContainer = [];
 
-function loadFirstTimeHomeScreen() {
-    content.appendChild(createRow(createStandardList()));
+if(userList != null) {
+    const list = JSON.parse(userList);
+    for(let x in list) {
+        let aux = createNewToDoList(list[x].subject);
+        for(let y in list[x].items) {
+            aux.addItem(createNewItem (
+                list[x].items[y].title,
+                list[x].items[y].description,
+                list[x].items[y].dueDate,
+                list[x].items[y].priority
+            ));
+        }
+        listContainer.push(aux);
+    }
 }
 
-function createRow(list) {
+function loadFirstTimeHomeScreen() {
+    content.appendChild(createRow(createStandardList(), false));
+}
+
+function createRow(list, isStoreLoader) {
     const row = document.createElement("div");
     row.style.height = "280px";
     row.style.display = "grid";
@@ -31,6 +52,11 @@ function createRow(list) {
     row.appendChild(itemsDiv);
     row.appendChild(insertAddtiveItem(list, itemsDiv));
     row.appendChild(createButtonExclude(row, list));
+
+    if(!isStoreLoader) {
+        listContainer.push(list);
+        saveContentOnLocalStorage(listContainer);
+    }
     return row;
 }
 
@@ -63,6 +89,12 @@ function createButtonExclude(row, list) {
     buttonExclude.addEventListener("click", () => {
         if(eraseConfirmation("ToDo Row List: " + list.subject)) {
             row.remove();
+            for(let x in listContainer) {
+                if(listContainer[x].subject === list.subject) {
+                    listContainer.splice(x, 1);
+                }
+            }
+            saveContentOnLocalStorage(listContainer);
         }
     });
     return buttonExclude;
@@ -124,6 +156,7 @@ function createButtonEraser(list, item) {
     button.style.fontWeight = "bolder";
     button.addEventListener("click", function() {
         eraseItem(list, item);
+        saveContentOnLocalStorage(listContainer);
     });
     return button;
 }
@@ -213,7 +246,7 @@ function newItemCreationModal(list, row) {
 
     form.addEventListener("submit", () => {       
         event.preventDefault(); 
-        if(addConfirmation("New ToDo Item")) {
+        if(addConfirmation("Item")) {
             let newItem = createNewItem(
                 form.elements.item(0).value,
                 form.elements.item(1).value,
@@ -222,6 +255,7 @@ function newItemCreationModal(list, row) {
             );
             list.addItem(newItem);
             row.appendChild(createItemOnDiv(list, newItem));
+            saveContentOnLocalStorage(listContainer);
             dialog.close();
             document.body.removeChild(dialog);
         }
@@ -233,10 +267,81 @@ function formatDate(date) {
     return day + "/" + month + "/" + year;
 }
 
+function createAddRowDiv() {
+    const divAdd = document.createElement("div");
+    divAdd.className = "addButton";
+    divAdd.style.height = "280px";
+    divAdd.style.border = "1px solid #1E2A5E";
+    divAdd.style.paddingLeft = "40vw";
+    divAdd.style.backgroundColor = "white";
+    divAdd.addEventListener("click", function() {
+        createRowWithModal();
+    })
+    return divAdd;
+}
+
+function createRowWithModal() {
+    const modal = document.createElement("dialog");
+    const form = document.createElement("form");
+    form.style.display = "flex";
+    form.style.flexDirection = "column";
+    form.style.gap = "10px";
+
+    let title = document.createElement("input");
+    title.setAttribute("type", "text");
+    title.setAttribute("title", "rowTitle");
+    title.setAttribute("placeholder", "ToDo List Title");
+
+    let submitButton = document.createElement("input");
+    submitButton.setAttribute("type", "submit");
+    submitButton.setAttribute("value", "Confirm");
+
+    let cancelButton = document.createElement("button");
+    cancelButton.setAttribute("type", "button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", () => {
+        modal.close();
+        document.body.removeChild(modal);
+    });
+
+    form.appendChild(title);
+    form.appendChild(submitButton);
+    form.appendChild(cancelButton);
+
+    modal.appendChild(form);
+    document.body.appendChild(modal);
+    modal.showModal();
+
+    form.addEventListener("submit", () => {       
+        event.preventDefault();
+        if(addConfirmation("Row: " + form.elements.item(0).value)) {
+            addNewRowOnLastIndex(createRow(createNewToDoList(form.elements.item(0).value), false));
+            modal.close();
+            document.body.removeChild(modal);
+            saveContentOnLocalStorage(listContainer);
+        }
+    });
+}
+
+function addNewRowOnLastIndex(row) {
+    content.removeChild(content.lastChild);
+    content.appendChild(row);
+    content.appendChild(createAddRowDiv());
+}
+
+function loadUserList() {
+    for (let x in listContainer) {
+        content.appendChild(createRow(listContainer[x], true));
+    }
+    content.appendChild(createAddRowDiv());
+}
+
 export {
     createItemOnDiv,
     loadFirstTimeHomeScreen,
     removeChildFromIndex,
     insertAddtiveItem,
-    newItemCreationModal
+    newItemCreationModal,
+    loadUserList,
+    createAddRowDiv,
 }
